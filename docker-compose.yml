@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   menu-postgres:
     image: postgres:16
@@ -10,15 +11,24 @@ services:
     ports:
       - "5433:5432"
 
+  redis:
+    image: redis:7
+    container_name: dinegrid_redis
+    ports:
+      - "6379:6379"
+
   menu-service:
-    build: .
+    build: ./menu-service
     container_name: menu_service_app
     ports:
       - "8082:8082"
     depends_on:
       - menu-postgres
+      - redis
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://menu_postgres:5432/menu_service_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATA_REDIS_HOST: dinegrid_redis
+      SPRING_DATA_REDIS_PORT: 6379
