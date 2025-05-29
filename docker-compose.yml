@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  menu-postgres:
+    image: postgres:16
+    container_name: menu_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: menu_service_db
+    ports:
+      - "5433:5432"
+
+  menu-service:
+    build: .
+    container_name: menu_service_app
+    ports:
+      - "8082:8082"
+    depends_on:
+      - menu-postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://menu_postgres:5432/menu_service_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
