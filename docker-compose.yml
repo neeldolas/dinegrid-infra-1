@@ -26,7 +26,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - dinegrid_net  # <-- this was missing ✅
+      - dinegrid_net  
 
   # Menu Service Application
   menu-service:
