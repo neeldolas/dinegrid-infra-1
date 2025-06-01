@@ -1,6 +1,8 @@
 version: '3.8'
 
 services:
+
+  # PostgreSQL for Menu Service
   menu-postgres:
     image: postgres:16
     container_name: menu_postgres
@@ -10,13 +12,19 @@ services:
       POSTGRES_DB: menu_service_db
     ports:
       - "5433:5432"
+    volumes:
+      - menu_pgdata:/var/lib/postgresql/data
 
+  # Redis for Caching
   redis:
     image: redis:7
     container_name: dinegrid_redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
 
+  # Menu Service Application
   menu-service:
     build: ./menu-service
     container_name: menu_service_app
@@ -30,5 +38,16 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_DATA_REDIS_HOST: dinegrid_redis
+      SPRING_CACHE_TYPE: redis
+      SPRING_DATA_REDIS_HOST: redis    
       SPRING_DATA_REDIS_PORT: 6379
+    networks:
+      - dinegrid_net
+
+volumes:
+  menu_pgdata:
+  redis_data:
+
+networks:
+  dinegrid_net:
+    driver: bridge
