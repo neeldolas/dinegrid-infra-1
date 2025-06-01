@@ -30,7 +30,8 @@ services:
 
   # Menu Service Application
   menu-service:
-    build: ./menu-service
+    # build: ./menu-service
+    image: neelddocker/menu-service:latest
     container_name: menu_service_app
     ports:
       - "8082:8082"
